@@ -1,2 +1,2 @@
-# efected-coto-emmory
+# efected-cotoemory
 Cloud API in Rust.
