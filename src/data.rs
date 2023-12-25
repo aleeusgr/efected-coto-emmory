@@ -9,18 +9,19 @@ pub struct Definitions {
     pub providers: HashMap<String, String>,
 }
 
+pub struct CmdExit {
+    pub code: exitcode::ExitCode,
+    pub message: Option<String>,
+}
+
 pub const CMD: &str = r"hello";
 
 #[cfg(test)]
 mod tests {
-    use insta::assert_yaml_snapshot;
-    use pretty_assertions::assert_eq;
-
     use super::*;
 
     #[test]
     fn test_foo() {
         assert_eq!(CMD.len(), 5);
-        assert_yaml_snapshot!(("one", "two"));
     }
 }

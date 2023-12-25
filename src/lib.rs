@@ -1,3 +1,8 @@
+#![allow(clippy::missing_const_for_fn)]
 // #![warn(missing_docs)] // uncomment for docs
-pub mod data;
-pub mod runner;
+
+mod data;
+mod runner;
+pub use data::{CmdExit, CMD};
+
+pub use self::runner::run;
