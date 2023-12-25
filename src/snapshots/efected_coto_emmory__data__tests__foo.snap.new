@@ -1,0 +1,8 @@
+---
+source: src/data.rs
+assertion_line: 24
+expression: "(\"one\", \"two\")"
+---
+- one
+- two
+

@@ -1,15 +1,56 @@
-use std::io;
+mod argh_ext;
+use std::process::exit;
 
-fn main() {
-    println!("Guess the number!");
+use argh::FromArgs;
 
-    println!("Please input your guess.");
+/// example: foobar
+#[derive(Debug, FromArgs)]
+#[allow(clippy::struct_excessive_bools)]
+struct AppArgs {
+    /// task to run
+    #[argh(positional)]
+    task: Option<String>,
 
-    let mut guess = String::new();
+    /// list tasks
+    #[argh(switch, short = 'l')]
+    list: bool,
 
-    io::stdin()
-        .read_line(&mut guess)
-        .expect("Failed to read line");
+    /// root path (default ".")
+    #[argh(option, short = 'p')]
+    path: Option<String>,
 
-    println!("You guessed: {guess}");
+    /// init local config
+    #[argh(switch, short = 'i')]
+    init: bool,
+}
+
+fn main() -> eyre::Result<()> {
+    let args: AppArgs = argh_ext::from_env();
+
+    let task = args.task;
+    println!("{task:?}");
+
+    let _path_s = args.path.unwrap_or_else(|| ".".to_string());
+
+    if args.init {
+        println!("wrote file.");
+        exit(0);
+    }
+
+    let res = if args.list {
+        println!("list!");
+        Ok(true)
+    } else {
+        efected_coto_emmory::runner::run()
+    };
+
+    match res {
+        Ok(ok) => {
+            exit(i32::from(!ok));
+        }
+        Err(err) => {
+            eprintln!("error: {err}");
+            exit(1)
+        }
+    }
 }
