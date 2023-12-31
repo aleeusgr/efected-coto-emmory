@@ -1,0 +1,27 @@
+[values]
+auditable = true
+axum = false
+bench = true
+codecov = true
+contributing = true
+description = "Rust template for project."
+dependabot = true
+discordlink = "http://discord.link"
+docker = false
+github_actions = true
+github-codeowner = "rush/geddylee"
+github-email = "flybynight@subdivisions.com"
+github-name = "geddylee"
+have_discord = true
+license = "dual"
+nix = true
+node-or-web = "web"
+port = "3000"
+metricsport = "4000"
+readme = true
+repo-name = "fission-codes"
+rust_project = false
+security_policy = true
+templates = true
+toolchain = "stable"
+wasm_project = false
