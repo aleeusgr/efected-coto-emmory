@@ -6,4 +6,4 @@ a PBL in sustainable open source communities.
 4. Farm X with Coding: describe a user; estimate impact and ROI; make a prediction; hack & test.
 
 ## [What is PBL?](https://www.pblworks.org/what-is-pbl)
-Project Based Learning (PBL) is a teaching method in which students learn by actively engaging in real-world and personally meaningful projects.
+Project Based Learning (PBL) is a self-sovereign teaching method in which the self learns by actively engaging in real-world and personally meaningful projects.
