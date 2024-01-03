@@ -77,6 +77,9 @@ async fn main() -> Result<()> {
         serve("Metrics", router, settings.server().metrics_port).await
     };
 
+    // the app is defined by an id (so we can have an API?)
+    // a router adds monitoring
+    //
     let app = async {
         let req_id = HeaderName::from_static(REQUEST_ID);
         let router = router::setup_app_router()
@@ -104,6 +107,9 @@ async fn main() -> Result<()> {
             .layer(CatchPanicLayer::custom(runtime::catch_panic))
             // Mark headers as sensitive on both requests and responses.
             .layer(SetSensitiveHeadersLayer::new([header::AUTHORIZATION]))
+            // here is openAPI with UAT:
+            // TODO: link docs on merge
+            // Here is where I add new functionality, right?
             .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()));
 
         serve("Application", router, settings.server().port).await
@@ -112,7 +118,7 @@ async fn main() -> Result<()> {
     tokio::try_join!(app, app_metrics)?;
     Ok(())
 }
-
+// to serve means to run with a Router app at a port and address.
 async fn serve(name: &str, app: Router, port: u16) -> Result<()> {
     let bind_addr: SocketAddr = SocketAddr::new(IpAddr::V4(Ipv4Addr::UNSPECIFIED), port);
     info!(
@@ -123,6 +129,7 @@ async fn serve(name: &str, app: Router, port: u16) -> Result<()> {
         bind_addr
     );
 
+    // server binds an address to serve the app at it
     axum::Server::bind(&bind_addr)
         .serve(app.into_make_service_with_connect_info::<SocketAddr>())
         .with_graceful_shutdown(shutdown())
