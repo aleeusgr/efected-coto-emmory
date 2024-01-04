@@ -110,6 +110,7 @@ async fn main() -> Result<()> {
             .layer(CatchPanicLayer::custom(runtime::catch_panic))
             // Mark headers as sensitive on both requests and responses.
             .layer(SetSensitiveHeadersLayer::new([header::AUTHORIZATION]))
+            .route("/say-hello", get(say_hello))
             // Here is where I add new functionality, right?
             // adds the following router to the self:
             .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()));
@@ -120,6 +121,9 @@ async fn main() -> Result<()> {
 
     tokio::try_join!(app, app_metrics)?;
     Ok(())
+}
+async fn say_hello() -> String {
+   return "Hello!".to_string();
 }
 // to serve means to run with a Router app at a port and address.
 async fn serve(name: &str, app: Router, port: u16) -> Result<()> {
