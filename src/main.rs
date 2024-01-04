@@ -111,7 +111,6 @@ async fn main() -> Result<()> {
             // Mark headers as sensitive on both requests and responses.
             .layer(SetSensitiveHeadersLayer::new([header::AUTHORIZATION]))
             .route("/say-hello", get(say_hello))
-            // Here is where I add new functionality, right?
             // adds the following router to the self:
             .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()));
         //TODO: test layers.
@@ -122,6 +121,8 @@ async fn main() -> Result<()> {
     tokio::try_join!(app, app_metrics)?;
     Ok(())
 }
+// this is a handler, a function that is used in a Router
+// integrate new functionality here:
 async fn say_hello() -> String {
    return "Hello!".to_string();
 }
