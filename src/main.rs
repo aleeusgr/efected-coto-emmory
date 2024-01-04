@@ -110,7 +110,7 @@ async fn main() -> Result<()> {
             .layer(CatchPanicLayer::custom(runtime::catch_panic))
             // Mark headers as sensitive on both requests and responses.
             .layer(SetSensitiveHeadersLayer::new([header::AUTHORIZATION]))
-            .route("/say-hello", get(say_hello))
+            .route("/say-hello", get(say_hello)) // change handler
             // adds the following router to the self:
             .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()));
         //TODO: test layers.
@@ -123,6 +123,7 @@ async fn main() -> Result<()> {
 }
 // this is a handler, a function that is used in a Router
 // integrate new functionality here:
+// TODO: A | B example: serve a stream. roadmap - show webcam on laptop screen.
 async fn say_hello() -> String {
    return "Hello!".to_string();
 }
