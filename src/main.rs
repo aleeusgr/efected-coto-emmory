@@ -47,11 +47,14 @@ const REQUEST_ID: &str = "request_id";
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    // IO
     let (stdout_writer, _stdout_guard) = tracing_appender::non_blocking(io::stdout());
 
+    // sui ex
     let settings = Settings::load()?;
     setup_tracing(stdout_writer, settings.otel())?;
 
+    // tracing?
     info!(
         subject = "app_settings",
         category = "init",
@@ -77,13 +80,12 @@ async fn main() -> Result<()> {
         serve("Metrics", router, settings.server().metrics_port).await
     };
 
-    // the app is defined by an id (so we can have an API?)
-    // a router adds monitoring
-    //
     let app = async {
-        let req_id = HeaderName::from_static(REQUEST_ID);
+        let req_id = HeaderName::from_static(REQUEST_ID); // used by the ServiceBuilder
+        // Router is used to set up which paths goes to which services:
         let router = router::setup_app_router()
             .route_layer(axum::middleware::from_fn(middleware::metrics::track))
+            // layer adds additional processing to a request for a group of routes
             .layer(Extension(env))
             // Include trace context as header into the response.
             .layer(response_with_trace_layer())
@@ -91,6 +93,7 @@ async fn main() -> Result<()> {
             // This returns a `TraceLayer` configured to use
             // OpenTelemetry’s conventional span field names.
             .layer(opentelemetry_tracing_layer())
+            // TODO: search ulid
             // Set and propagate "request_id" (as a ulid) per request.
             .layer(
                 ServiceBuilder::new()
@@ -107,10 +110,10 @@ async fn main() -> Result<()> {
             .layer(CatchPanicLayer::custom(runtime::catch_panic))
             // Mark headers as sensitive on both requests and responses.
             .layer(SetSensitiveHeadersLayer::new([header::AUTHORIZATION]))
-            // here is openAPI with UAT:
-            // TODO: link docs on merge
             // Here is where I add new functionality, right?
+            // adds the following router to the self:
             .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()));
+        //TODO: test layers.
 
         serve("Application", router, settings.server().port).await
     };
