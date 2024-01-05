@@ -113,7 +113,7 @@ async fn main() -> Result<()> {
             .layer(CatchPanicLayer::custom(runtime::catch_panic))
             // Mark headers as sensitive on both requests and responses.
             .layer(SetSensitiveHeadersLayer::new([header::AUTHORIZATION]))
-            .route("/say-hello", get(handlers::my::say_hello)) // change handler
+            .route("/say-hello", get(handlers::my::html)) // change handler
             // adds the following router to the self:
             .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()));
         //TODO: test layers.
