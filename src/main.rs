@@ -42,6 +42,7 @@ use efected_coto_emmory::{
     },
 };
 
+use handlers::log;
 pub mod handlers; // notice this line
 
 /// Request identifier field.
