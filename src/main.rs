@@ -42,8 +42,9 @@ use efected_coto_emmory::{
     },
 };
 
+use efected_coto_emmory::get_image;
 use handlers::my;
-pub mod handlers; // notice this line
+pub mod handlers;
 
 /// Request identifier field.
 const REQUEST_ID: &str = "request_id";
@@ -96,7 +97,6 @@ async fn main() -> Result<()> {
             // This returns a `TraceLayer` configured to use
             // OpenTelemetry’s conventional span field names.
             .layer(opentelemetry_tracing_layer())
-            // TODO: search ulid
             // Set and propagate "request_id" (as a ulid) per request.
             .layer(
                 ServiceBuilder::new()
@@ -113,7 +113,8 @@ async fn main() -> Result<()> {
             .layer(CatchPanicLayer::custom(runtime::catch_panic))
             // Mark headers as sensitive on both requests and responses.
             .layer(SetSensitiveHeadersLayer::new([header::AUTHORIZATION]))
-            .route("/say-hello", get(handlers::my::get_image))
+            .route("/say-hello", get(handlers::my::say_hello))
+            .route("/test-lib", get(get_image))
             .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()));
 
         serve("Application", router, settings.server().port).await
