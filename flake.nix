@@ -61,6 +61,8 @@
               # because native build inputs are added to $PATH in the order they're listed here.
               nightly-rustfmt
               rust-toolchain
+              openssl
+              pkg-config
               pre-commit
               protobuf
               direnv
