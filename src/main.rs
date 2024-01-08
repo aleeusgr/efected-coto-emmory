@@ -42,16 +42,23 @@ use efected_coto_emmory::{
     },
 };
 
+use efected_coto_emmory::get_image;
+use handlers::my;
+pub mod handlers;
+
 /// Request identifier field.
 const REQUEST_ID: &str = "request_id";
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    // IO
     let (stdout_writer, _stdout_guard) = tracing_appender::non_blocking(io::stdout());
 
+    // sui ex
     let settings = Settings::load()?;
     setup_tracing(stdout_writer, settings.otel())?;
 
+    // tracing?
     info!(
         subject = "app_settings",
         category = "init",
@@ -78,9 +85,11 @@ async fn main() -> Result<()> {
     };
 
     let app = async {
-        let req_id = HeaderName::from_static(REQUEST_ID);
+        let req_id = HeaderName::from_static(REQUEST_ID); // used by the ServiceBuilder
+        // Router is used to set up which paths goes to which services:
         let router = router::setup_app_router()
             .route_layer(axum::middleware::from_fn(middleware::metrics::track))
+            // layer adds additional processing to a request for a group of routes
             .layer(Extension(env))
             // Include trace context as header into the response.
             .layer(response_with_trace_layer())
@@ -104,6 +113,8 @@ async fn main() -> Result<()> {
             .layer(CatchPanicLayer::custom(runtime::catch_panic))
             // Mark headers as sensitive on both requests and responses.
             .layer(SetSensitiveHeadersLayer::new([header::AUTHORIZATION]))
+            .route("/say-hello", get(handlers::my::say_hello))
+            .route("/test-lib", get(get_image))
             .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()));
 
         serve("Application", router, settings.server().port).await
@@ -112,7 +123,7 @@ async fn main() -> Result<()> {
     tokio::try_join!(app, app_metrics)?;
     Ok(())
 }
-
+// to serve means to run with a Router app at a port and address.
 async fn serve(name: &str, app: Router, port: u16) -> Result<()> {
     let bind_addr: SocketAddr = SocketAddr::new(IpAddr::V4(Ipv4Addr::UNSPECIFIED), port);
     info!(
@@ -123,6 +134,7 @@ async fn serve(name: &str, app: Router, port: u16) -> Result<()> {
         bind_addr
     );
 
+    // server binds an address to serve the app at it
     axum::Server::bind(&bind_addr)
         .serve(app.into_make_service_with_connect_info::<SocketAddr>())
         .with_graceful_shutdown(shutdown())
