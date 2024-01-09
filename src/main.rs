@@ -29,6 +29,7 @@ use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 use efected_coto_emmory::{
     docs::ApiDoc,
+    get_image,
     metrics::{process, prom::setup_metrics_recorder},
     middleware::{self, request_ulid::MakeRequestUlid, runtime},
     router,
@@ -42,7 +43,6 @@ use efected_coto_emmory::{
     },
 };
 
-use efected_coto_emmory::get_image;
 use handlers::my;
 pub mod handlers;
 
