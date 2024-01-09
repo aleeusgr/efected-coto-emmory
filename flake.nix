@@ -63,6 +63,7 @@
               rust-toolchain
               openssl
               pkg-config
+              ffmpeg
               pre-commit
               protobuf
               direnv
