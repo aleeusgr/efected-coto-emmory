@@ -11,7 +11,7 @@ Project Based Learning (PBL) is a teaching method in which students learn by act
 3. cargo `test` (optional)
 4. cargo `run`
 
-UAT: Swagger UI is accessible [in the browser](http://localhost:3000/swagger-ui/). <br>
+Swagger UI is accessible [in the browser](http://localhost:3000/swagger-ui/) or http://localhost:3000/test-lib
 
 Maybe try nix `flake update`?
 
